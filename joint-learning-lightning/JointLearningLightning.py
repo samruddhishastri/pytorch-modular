@@ -65,7 +65,7 @@ class JointModelLightning(pl.LightningModule):
         X = X.type(torch.cuda.FloatTensor)
         y = y.type(torch.cuda.FloatTensor)
         segmentation_pred, recon_score, recon_pred = self.model(X)
-        loss = self.LOSS_FN(segmentation_pred, y) + recon_score
+        loss = self.LOSS_FN(segmentation_pred, y) + self.LAMBDA*recon_score
         return loss
     
     def validation_step(self, batch, batch_idx):
@@ -73,7 +73,7 @@ class JointModelLightning(pl.LightningModule):
         X = X.type(torch.cuda.FloatTensor)
         y = y.type(torch.cuda.FloatTensor)
         segmentation_pred, recon_score, recon_pred = self.model(X)
-        val_loss = self.LOSS_FN(segmentation_pred, y) + recon_score
+        val_loss = self.LOSS_FN(segmentation_pred, y) + self.LAMBDA*recon_score
         return val_loss
 
     def training_epoch_end(self, outputs) -> None:
