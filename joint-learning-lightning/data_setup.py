@@ -20,11 +20,13 @@ class CustomDatasetClass(data.Dataset):
 
     def __getitem__(self, index):
         img = cv.cvtColor(cv.imread(self.img_files[index]), cv.COLOR_BGR2GRAY)
-        mask = cv.cvtColor(cv.imread(self.masks[index]), cv.COLOR_BGR2GRAY)
+        mask = np.zeros(img.shape, dtype='uint8')
+        if(os.path.exists(self.masks[index])):
+            mask = cv.cvtColor(cv.imread(self.masks[index]), cv.COLOR_BGR2GRAY)
         img = cv.resize(img, (256, 256), interpolation = cv.INTER_NEAREST)
         mask = cv.resize(mask, (256, 256), interpolation = cv.INTER_NEAREST)
-        img = np.expand_dims(img, 0)
-        mask = np.expand_dims(mask, 0)
+        img = np.expand_dims(img, 0)/255
+        mask = np.expand_dims(mask, 0)/255
         return img, mask
 
     def __len__(self):
